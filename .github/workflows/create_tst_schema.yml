@@ -9,16 +9,16 @@ permissions:
       contents: read
 
 jobs:
-  build-and-deploy::
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
     - name: 'Az CLI login'
       uses: azure/login@v1
       with:
           super_secret: ${{ secrets.AZURE_CREDENTIALS }}
-    
+
     - name: 'Run Azure CLI commands'
       run: |
-          az account show
-          az group list
-          pwd 
+        az account show
+        az group list
+        pwd 
