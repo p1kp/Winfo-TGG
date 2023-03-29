@@ -1,29 +1,14 @@
-# .github/workflows/sql-deploy.yml
-name: Deploy SQL to DB
-on: 
-  push:
-    branches:
-      - main
+name: PostgreSQL for GitHub Actions
 
-  workflow_dispatch:
-
-permissions:
-  id-token: write
-  contents: read
+on:
+push:
+    branches: [ main ]
 
 jobs:
-  build-and-deploy:
-    runs-on: windows-latest
+build:
+    runs-on: ubuntu-latest
     steps:
-    - name: 'Az CLI login'
-      uses: azure/login@v1
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-    - name: 'Run az commands'
-      run: |
-        az account show
-        az group list
-        pwd 
+    - uses: actions/checkout@v1
+    - uses: azure/login@v1
+    with:
+        creds: ${{ secrets.AZURE_CRED }}
