@@ -15,4 +15,4 @@ jobs:
       uses: bytebase/sql-review-action@main
       with:
         database-type: "POSTGRES"
-        file-pattern: "tst_schema.sql"
+        file-pattern: "./tst_schema.sql"
