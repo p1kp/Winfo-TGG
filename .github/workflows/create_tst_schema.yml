@@ -1,0 +1,13 @@
+on: [push]
+name: Deploy SQL to DB
+jobs:
+  build-and-deploy:
+    runs-on: tgg-oms-psql
+    steps:
+
+      # Deploy SQL template
+    - name: Run SQL Script
+      uses: bytebase/sql-review-action@main
+      with:
+        database-type: "POSTGRES"
+        file-pattern: "tst_schema.sql"
