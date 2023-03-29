@@ -23,7 +23,7 @@ jobs:
 
     - uses: azure/login@v1
       with:
-          creds: ${{ secrets.AZURE_CRED }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - uses: actions/checkout@v3
 
