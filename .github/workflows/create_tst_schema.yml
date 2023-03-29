@@ -11,8 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    
+
     - name: Install Azure cli
       run: |
         sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
@@ -24,7 +23,9 @@ jobs:
 
     - uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CRED }}
+          creds: ${{ secrets.AZURE_CRED }}
+
+    - uses: actions/checkout@v3
 
     - uses: azure/CLI@v1
       with:
