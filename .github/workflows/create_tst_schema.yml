@@ -1,5 +1,6 @@
 on: [push]
 name: Deploy SQL to DB
+  workflow_dispatch:
 jobs:
   build-and-deploy:
     runs-on: tgg-oms-psql
