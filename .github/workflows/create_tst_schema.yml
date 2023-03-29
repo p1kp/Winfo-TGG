@@ -1,7 +1,6 @@
 # .github/workflows/sql-deploy.yml
 name: Deploy SQL to DB
-on:
-  push:
+on: [push]
     branches:
       - main
 
@@ -15,6 +14,9 @@ jobs:
     - uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: "62c1749b-7b43-4efa-8639-3c926a2170b4"
+        tenant-id: "7c51d221-e93b-4397-b4c7-775faf9f6d10"
+        subscription-id: "c5e9d6d0-eba7-4ef9-b557-f36cdb3f1778"
         enable-AzPSSession: true 
 
     - uses: actions/checkout@v3
