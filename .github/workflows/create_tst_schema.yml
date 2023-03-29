@@ -11,4 +11,4 @@ jobs:
       - uses: actions/checkout@v1
       - uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CRED }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
