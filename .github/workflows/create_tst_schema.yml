@@ -5,14 +5,17 @@ on:
       - main
 
   workflow_dispatch:
+
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-
-      # Deploy SQL template
-    - name: Run SQL Script
-      uses: bytebase/sql-review-action@main
+    - uses: actions/checkout@v3
+    - uses: azure/login@v1                            # Azure login required to add a temporary firewall rule
       with:
+        creds: ${{ secrets.AZURE_CRED }}
+    - uses: azure/sql-action@v2.1
+      with:
+        connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
         database-type: "POSTGRES"
-        file-pattern: "./tst_schema.sql"
+        path: './tst_schema.sql'
