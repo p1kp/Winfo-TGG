@@ -12,11 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-
       with:
         creds: ${{ secrets.AZURE_CRED }}
     - uses: azure/sql-action@v2.1
       with:
         connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
-        database-type: "POSTGRES"
         path: './tst_schema.sql'
