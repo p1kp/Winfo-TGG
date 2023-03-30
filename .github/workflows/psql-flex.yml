@@ -1,4 +1,4 @@
-name: PostgreSQL Flexible server
+name: PostgreSQL Flexible server build
 
 on:
   push:
