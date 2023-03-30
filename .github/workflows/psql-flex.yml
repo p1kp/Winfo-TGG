@@ -1,4 +1,4 @@
-name: PostgreSQL for GitHub Actions
+name: PostgreSQL Flexible server
 
 on:
   push:
