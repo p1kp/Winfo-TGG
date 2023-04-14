@@ -11,11 +11,9 @@ permissions:
       contents: read
 
 jobs:
-  build-and-deploy:
+  gh_psql:
     runs-on: self-hosted
     steps:
-    - run: install-azure-cli.sh
-      shell: bash
 
     - name: 'Az CLI login'
       uses: azure/actions/login@v1
