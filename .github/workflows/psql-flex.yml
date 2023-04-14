@@ -25,6 +25,7 @@ jobs:
         az account show
         az group list
         pwd 
+    - uses: actions/checkout@v3
 
     - uses: azure/postgresql@v1
       with:
