@@ -31,4 +31,4 @@ jobs:
       with:
         connection-string: ${{ secrets.AZURE_POSTGRESQL_CONNECTION_STRING }}
         server-name: tst-oms-psqlflex
-        plsql-file: '${{ github.workspace }}/tst_schema.sql'
+        plsql-file: './tst_schema.sql'
