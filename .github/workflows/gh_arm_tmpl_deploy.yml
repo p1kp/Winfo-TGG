@@ -30,7 +30,7 @@ jobs:
       id: deploy
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: winfo-dev-rg
+        resourceGroupName: winfo-dev-rgp
         template: ./azuredeploy.json
         parameters: ./azuredeploy-params.json
         deploymentName: github-arm-template-deploy
