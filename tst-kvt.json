@@ -165,8 +165,9 @@
         }
     ],
     "outputs": {
-      "containerName": {
-        "type": "string",
-        "value": "[parameters('containerName')]"
-    }
+		"containerName": {
+			"type": "string",
+			"value": "[parameters('containerName')]"
+		}
+	}
 }
