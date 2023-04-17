@@ -36,7 +36,7 @@
         },
         "rgName": {
             "type": "String",
-            "defaultValue": "winfo-mpn-rgp",
+            "defaultValue": "winfo-dev-rgp",
             "metadata": {
                 "description": "Provide the application type like pos."
             }
