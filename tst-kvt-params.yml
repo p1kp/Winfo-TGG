@@ -12,7 +12,7 @@
             "value": "pos"
         },
         "rgName": {
-            "value": "tst-oms-rgp"
+            "value": "winfo-dev-rgp"
         },
         "keyVaultName": {
             "value": "tst-oms-psql-kvt"
