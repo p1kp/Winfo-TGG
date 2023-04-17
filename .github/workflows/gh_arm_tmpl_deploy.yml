@@ -31,8 +31,8 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: winfo-dev-rgp
-        template: ./azuredeploy.json
-        parameters: ./azuredeploy-params.json
+        template: ./tst-kvt.json
+        parameters: ./tst-kvt-params.json
         deploymentName: github-arm-template-deploy
 
     # output containerName variable from template
