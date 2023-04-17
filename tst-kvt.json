@@ -1,0 +1,172 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environmentName": {
+            "defaultValue": "oms",
+            "type": "String",
+            "metadata": {
+                "description": "Name for Azure database for PostgreSQL"
+            }
+        },
+        "environmentType": {
+            "type": "String",
+            "defaultValue": "uat",
+            "allowedValues": [
+                "dev",
+                "tst",
+                "uat",
+                "prd",
+                ""
+            ]
+        },
+        "appType": {
+            "type": "String",
+            "defaultValue": "pos",
+            "metadata": {
+                "description": "Provide the application type like pos."
+            }
+        },
+        "dbAdminPassword": {
+            "type": "secureString",
+            "defaultValue": "Winfo_123",
+            "metadata": {
+                "description": "Provide the PostgreSQL DB Admin Password to be stored in KV."
+            }
+        },
+        "rgName": {
+            "type": "String",
+            "defaultValue": "winfo-mpn-rgp",
+            "metadata": {
+                "description": "Provide the application type like pos."
+            }
+        },
+        "keyVaultName": {
+            "type": "String",
+            "defaultValue": "tst-oms-psql-kvt",
+            "metadata": {
+                "description": "Provide the keyvault name where passwords required to be updated."
+            }
+        },
+		"containerName": {
+            "type": "String",
+            "defaultValue": "gh_arm_deploy",
+            "metadata": {
+                "description": "Provide the container name where logs will be updated."
+            }
+        },
+        "repname": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "KeyVaultExists": {
+            "type": "bool"
+        }
+    },
+    "functions": [],
+    "variables": {
+        "deploymentName": "[concat(parameters('environmentType'),parameters('repname'),'-',parameters('environmentName'),'-db-kvt-',uniqueString(resourceGroup().id))]",
+        "adminSecretName": "[concat(parameters('environmentType'),parameters('repname'),'-',parameters('environmentName'),'-db-omsadmin-pw')]",
+        "dbconnectionStringName": "[concat(parameters('environmentType'),parameters('repname'),'-',parameters('environmentName'),'-db-connectionstring')]",
+        "dbconnectionStringvalue": "[concat('Host=',parameters('environmentType'),parameters('repname'),'-',parameters('environmentName'),'-psql.postgres.database.azure.com;Database=oms;Username=omsadmin;Password={0};Persist Security')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "[variables('deploymentName')]",
+            "resourceGroup": "[parameters('rgName')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {
+                    },
+                    "functions": [],
+                    "resources": [
+                        {
+                            "type": "Microsoft.KeyVault/vaults",
+                            "apiVersion": "2021-11-01-preview",
+                            "name": "[parameters('keyVaultName')]",
+                            "location": "[resourceGroup().location]",
+                            "properties": {
+                                "enabledForTemplateDeployment": true,
+                                "enabledForDeployment": true,
+                                "enableSoftDelete": true,
+                                "softDeleteRetentionInDays": 90,
+                                "tenantId": "[subscription().tenantId]",
+                                "enabledForDiskEncryption": false,
+                                "tags": {
+                                    "cost": "it",
+                                    "billto": "tgg",
+                                    "function": "[parameters('appType')]",
+                                    "teams": "[parameters('appType')]",
+                                    "environment": "[parameters('environmentType')]"
+                                },
+                                "sku": {
+                                    "name": "standard",
+                                    "family": "A"
+                                },
+                                "networkAcls": {
+                                    "defaultAction": "Allow",
+                                    "bypass": "AzureServices"
+                                },
+                                "vaultUri": "[concat('https://', parameters('keyVaultName'), '.vault.azure.net/')]",
+                                "createMode": "[if(parameters('KeyVaultExists'),'recover', 'create')]",
+                                "accessPolicies": [
+                                    {
+                                        "tenantId": "[subscription().tenantId]",
+                                        "objectId": "4e4c503a-c949-4ee2-a6b0-d40f57880681",
+                                        "permissions": {
+                                            "secrets": [
+                                                "Get",
+                                                "List",
+                                                "Set",
+                                                "Delete",
+                                                "Recover",
+                                                "Backup",
+                                                "Restore",
+                                                "Purge"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type": "Microsoft.KeyVault/vaults/secrets",
+                            "apiVersion": "2021-11-01-preview",
+                            "name": "[format('{0}/{1}', parameters('keyVaultName'), variables('adminSecretName'))]",
+                            "properties": {
+                                "value": "[parameters('dbAdminPassword')]"
+                            },
+                            "copy": {
+                                "count": 1,
+                                "name": "adminSecret"
+                            },
+                            "dependsOn": [
+                                "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+                            ]
+                        },
+                        {
+                            "type": "Microsoft.KeyVault/vaults/secrets",
+                            "apiVersion": "2021-11-01-preview",
+                            "name": "[format('{0}/{1}', parameters('keyVaultName'), variables('dbconnectionStringName'))]",
+                            "properties": {
+                                "value": "[variables('dbconnectionStringvalue')]"
+                            },
+                            "dependsOn": [ "adminSecret" ]
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "outputs": {
+      "containerName": {
+        "type": "string",
+        "value": "[parameters('containerName')]"
+    }
+}
