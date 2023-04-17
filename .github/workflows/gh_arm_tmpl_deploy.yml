@@ -1,0 +1,41 @@
+name: Azure ARM
+on: 
+  push:
+    branches: [ ARMDPL ]
+
+  workflow_dispatch:
+
+permissions:
+      id-token: write
+      contents: read
+
+jobs:
+  build-and-deploy_ARM-Template:
+    runs-on: self-hosted
+    steps:
+
+    # Log into Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # Checkout code
+    - uses: actions/checkout@v3
+	  with:
+	    ref: ARMDPL
+
+    # Deploy ARM template
+    - name: Run ARM deploy
+      uses: azure/arm-deploy@v1
+	  id: deploy
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        resourceGroupName: winfo-mpn-rg
+        template: ./tst-kvt.json
+        parameters: ./tst-kvt-params.json
+		deploymentName: github-arm-template-deploy
+
+    # output containerName variable from template
+    - run: echo ${{ steps.deploy.outputs.containerName }}
+
+	persist-credentials: false
