@@ -48,6 +48,31 @@
                 "description": "Provide the keyvault name where passwords required to be updated."
             }
         },
+		"location": {
+		  "type": "string",
+		  "defaultValue": "[resourceGroup().location]",
+		  "metadata": {
+			"description": "The location of the resources"
+		  }
+		},
+		"skuName": {
+			"type": "string",
+			"defaultValue": "standard",
+			"allowedValues": [
+				"standard",
+				"premium"
+			],
+			"metadata": {
+				"description": "The SKU of the vault to be created."
+			}
+		},
+		"keySize": {
+			"type": "int",
+			"defaultValue": 2048,
+			"metadata": {
+				"description": "The size in bits of the key to be created."
+			}
+		},
 		"containerName": {
             "type": "String",
             "defaultValue": "gh_arm_deploy",
@@ -86,88 +111,92 @@
                     },
                     "functions": [],
                     "resources": [
-                        {
-                            "type": "Microsoft.KeyVault/vaults",
-                            "apiVersion": "2021-11-01-preview",
-                            "name": "[parameters('keyVaultName')]",
-                            "location": "[resourceGroup().location]",
-                            "properties": {
-                                "enabledForTemplateDeployment": true,
-                                "enabledForDeployment": true,
-                                "enableSoftDelete": true,
-                                "softDeleteRetentionInDays": 90,
-                                "tenantId": "[subscription().tenantId]",
-                                "enabledForDiskEncryption": false,
-                                "tags": {
-                                    "cost": "it",
-                                    "billto": "tgg",
-                                    "function": "[parameters('appType')]",
-                                    "teams": "[parameters('appType')]",
-                                    "environment": "[parameters('environmentType')]"
-                                },
-                                "sku": {
-                                    "name": "standard",
-                                    "family": "A"
-                                },
-                                "networkAcls": {
-                                    "defaultAction": "Allow",
-                                    "bypass": "AzureServices"
-                                },
-                                "vaultUri": "[concat('https://', parameters('keyVaultName'), '.vault.azure.net/')]",
-                                "createMode": "[if(parameters('KeyVaultExists'),'recover', 'create')]",
-                                "accessPolicies": [
-                                    {
-                                        "tenantId": "[subscription().tenantId]",
-                                        "objectId": "4e4c503a-c949-4ee2-a6b0-d40f57880681",
-                                        "permissions": {
-                                            "secrets": [
-                                                "Get",
-                                                "List",
-                                                "Set",
-                                                "Delete",
-                                                "Recover",
-                                                "Backup",
-                                                "Restore",
-                                                "Purge"
-                                            ]
-                                        }
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "type": "Microsoft.KeyVault/vaults/secrets",
-                            "apiVersion": "2021-11-01-preview",
-                            "name": "[format('{0}/{1}', parameters('keyVaultName'), variables('adminSecretName'))]",
-                            "properties": {
-                                "value": "[parameters('dbAdminPassword')]"
-                            },
-                            "copy": {
-                                "count": 1,
-                                "name": "adminSecret"
-                            },
-                            "dependsOn": [
-                                "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
-                            ]
-                        },
-                        {
-                            "type": "Microsoft.KeyVault/vaults/secrets",
-                            "apiVersion": "2021-11-01-preview",
-                            "name": "[format('{0}/{1}', parameters('keyVaultName'), variables('dbconnectionStringName'))]",
-                            "properties": {
-                                "value": "[variables('dbconnectionStringvalue')]"
-                            },
-                            "dependsOn": [ "adminSecret" ]
-                        }
+						{
+							"type": "Microsoft.KeyVault/vaults",
+							"apiVersion": "2021-11-01-preview",
+							"name": "[parameters('keyVaultName')]",
+							"location": "[resourceGroup().location]",
+							"properties": {
+								"enabledForTemplateDeployment": true,
+								"enabledForDeployment": true,
+								"enableSoftDelete": true,
+								"softDeleteRetentionInDays": 90,
+								"tenantId": "[subscription().tenantId]",
+								"enabledForDiskEncryption": false,
+								"tags": {
+									"cost": "it",
+									"billto": "tgg",
+									"function": "[parameters('appType')]",
+									"teams": "[parameters('appType')]",
+									"environment": "[parameters('environmentType')]"
+								},
+								"sku": {
+									"name": "[parameters('skuName')]",
+									"family": "A"
+								},
+								"networkAcls": {
+									"defaultAction": "Allow",
+									"bypass": "AzureServices"
+								},
+								"vaultUri": "[concat('https://', parameters('keyVaultName'), '.vault.azure.net/')]",
+								"createMode": "[if(parameters('KeyVaultExists'),'recover', 'create')]",
+								"accessPolicies": [
+									{
+										"tenantId": "[subscription().tenantId]",
+										"objectId": "4e4c503a-c949-4ee2-a6b0-d40f57880681",
+										"permissions": {
+											"secrets": [
+												"Get",
+												"List",
+												"Set",
+												"Delete",
+												"Recover",
+												"Backup",
+												"Restore",
+												"Purge"
+											]
+										}
+									}
+								]
+							}
+						},
+						{
+							"type": "Microsoft.KeyVault/vaults/secrets",
+							"apiVersion": "2021-11-01-preview",
+							"name": "[format('{0}/{1}', parameters('keyVaultName'), variables('adminSecretName'))]",
+							"properties": {
+								"value": "[parameters('dbAdminPassword')]",
+								"keySize": "[parameters('keySize')]"
+							},
+							"copy": {
+								"count": 1,
+								"name": "adminSecret"
+							},
+							"dependsOn": [
+								"[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+							]
+						},
+						{
+							"type": "Microsoft.KeyVault/vaults/secrets",
+							"apiVersion": "2021-11-01-preview",
+							"name": "[format('{0}/{1}', parameters('keyVaultName'), variables('dbconnectionStringName'))]",
+							"properties": {
+								"value": "[variables('dbconnectionStringvalue')]",
+								"keySize": "[parameters('keySize')]"
+							},
+							"dependsOn": [ 
+								"[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]","[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), variables('adminSecretName'))]" 
+							]
+						}
                     ]
                 }
             }
         }
     ],
     "outputs": {
-		"containerName": {
-			"type": "string",
-			"value": "[parameters('containerName')]"
+		"proxyKey": {
+		  "type": "object",
+		  "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), variables('adminSecretName')))]"
 		}
 	}
 }
