@@ -11,7 +11,7 @@
         },
         "environmentType": {
             "type": "String",
-            "defaultValue": "uat",
+            "defaultValue": "tst",
             "allowedValues": [
                 "dev",
                 "tst",
