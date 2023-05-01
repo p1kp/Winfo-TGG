@@ -17,6 +17,9 @@
         "keyVaultName": {
             "value": "tst-oms-psql-kvt"
         },
+		"skuName": {
+            "value": "standard"
+        },
         "KeyVaultExists": {
             "value": false
         }                
