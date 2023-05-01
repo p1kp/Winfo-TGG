@@ -196,7 +196,7 @@
     "outputs": {
 		"proxyKey": {
 		  "type": "object",
-		  "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), variables('adminSecretName')))]"
+		  "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'), variables('keyVaultName')))]"
 		}
 	}
 }
