@@ -73,7 +73,7 @@
 				"description": "The size in bits of the key to be created."
 			}
 		},
-		"containerName": {
+		"ArrayDes": {
             "type": "String",
             "defaultValue": "gh_arm_deploy",
             "metadata": {
@@ -194,9 +194,9 @@
         }
     ],
     "outputs": {
-		"proxyKey": {
-		  "type": "object",
-		  "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'), parameters('keyVaultName')))]"
+		"ARMOP": {
+		  "type": "string",
+		  "value": "[parameters('ArrayDes')]"
 		}
 	}
 }
