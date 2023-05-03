@@ -21,7 +21,7 @@
             "value": "standard"
         },
         "KeyVaultExists": {
-            "value": false
+            "value": true
         }                
     }
 }
