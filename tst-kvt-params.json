@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "environmentName": {
+           "value": "oms"
+       },
+       "environmentType": {
+           "value": "tst"
+        }, 
+        "appType": {
+            "value": "pos"
+        },
+        "rgName": {
+            "value": "winfo-dev-rgp"
+        },
+        "keyVaultName": {
+            "value": "tst-oms-psql-kvt"
+        },
+		"skuName": {
+            "value": "standard"
+        },
+        "KeyVaultExists": {
+            "value": true
+        }                
+    }
+}
