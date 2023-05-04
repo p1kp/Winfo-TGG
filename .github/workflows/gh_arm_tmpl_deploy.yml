@@ -2,7 +2,8 @@ name: Azure Resource deployment
 
 on: 
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
+    types: [ synchronize ]
 
   workflow_dispatch:
 
