@@ -3,6 +3,8 @@ name: PostgreSQL Flexible server build
 on: 
   push:
     branches: [ main ]
+    paths:
+      - '.github/workflows/**'
 
   workflow_dispatch:
 
