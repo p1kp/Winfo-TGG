@@ -1,9 +1,10 @@
 name: Azure Resource deployment
 
 on: 
-  pull_request_review:
-    types: [ submitted ]
+  pull_request:
     branches: [ main ]
+    paths:
+      - '.github/workflows/**'
 
   workflow_dispatch:
 
