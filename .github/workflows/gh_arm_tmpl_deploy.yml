@@ -2,8 +2,11 @@ name: Azure Resource deployment
 
 on: 
   pull_request:
+    types:
+      - closed
     branches: [ main ]
 
+    # It will deploy the changes on specified path
     paths:
       - '.github/workflows/**.yml'
 
@@ -14,7 +17,8 @@ permissions:
   contents: read
 
 jobs:
-  build-and-deploy_ARM-Template:
+  if_merged:
+    if: github.event.pull_request.merged == true
     runs-on: self-hosted
     steps:
 
