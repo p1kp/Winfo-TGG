@@ -17,7 +17,7 @@ permissions:
       contents: read
 
 jobs:
-  if_merged:
+  Azure_Resource_Deployment:
     if: github.event.pull_request.merged == true
     runs-on: self-hosted
     steps:
