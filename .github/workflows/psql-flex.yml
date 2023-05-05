@@ -1,7 +1,9 @@
 name: PostgreSQL Flexible server build
 
 on: 
-  push:
+  pull_request:
+    types:
+      - closed
     branches: [ main ]
 
   workflow_dispatch:
@@ -11,7 +13,8 @@ permissions:
       contents: read
 
 jobs:
-  gh_psql:
+  if_merged:
+    if: github.event.pull_request.merged == true
     runs-on: self-hosted
     steps:
 
