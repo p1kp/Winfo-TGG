@@ -1,8 +1,14 @@
 name: PostgreSQL for GitHub Actions
 
 on: 
-  push:
+  pull_request:
+    types:
+      - closed
     branches: [ main ]
+
+    # It will deploy the changes on specified path
+    paths:
+      - '.github/workflows/**.yml'
 
   workflow_dispatch:
 
@@ -11,7 +17,8 @@ permissions:
       contents: read
 
 jobs:
-  build-and-deploy:
+  if_merged:
+    if: github.event.pull_request.merged == true
     runs-on: self-hosted
     steps:
     - name: 'Az CLI login'
