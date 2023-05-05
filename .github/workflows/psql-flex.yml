@@ -6,7 +6,7 @@ on:
       - closed
     branches: [ main ]
 
-    # It will deploy the changes on specified path
+    # It will deploy the changes on specified path.
     paths:
       - '.github/workflows/**.yml'
 
